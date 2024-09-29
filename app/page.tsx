@@ -219,7 +219,7 @@ export default function Home() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5, staggerChildren: 0.1 }}
-                        className="grid grid-cols-2 gap-2 md:gap-4 text-base md:text-lg text-gray-300"
+                        className="flex flex-col gap-2 md:gap-4 text-base md:text-lg text-gray-300"
                       >
                         {['Next.js', 'Flutter', 'Firebase', 'MERN'].map((skill, index) => (
                           <motion.li
