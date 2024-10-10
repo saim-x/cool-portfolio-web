@@ -1,120 +1,68 @@
-import React, { useRef, useMemo, useEffect, useState } from 'react'
+import React, { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Mesh, ShaderMaterial, Vector2, Vector3 } from 'three'
+import { Points, PointsMaterial, BufferGeometry, Vector3 } from 'three'
+import * as THREE from 'three'
 
-const fragmentShader = `
-  uniform float time;
-  uniform vec2 resolution;
-  uniform vec3 mousePosition;
-  uniform float isMobile;
-
-  vec3 palette( float t ) {
-    vec3 a = vec3(0.05, 0.05, 0.05);
-    vec3 b = vec3(0.1, 0.1, 0.1);
-    vec3 c = vec3(0.3, 0.3, 0.3);
-    vec3 d = vec3(0.05, 0.1, 0.15);
-    return a + b*cos( 6.28318*(c*t+d) );
-  }
-
-  void main() {
-    vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / resolution.y;
-    vec2 uv0 = uv;
-    vec3 finalColor = vec3(0.0);
-    
-    float iterations = isMobile > 0.5 ? 1.0 : 2.0;
-    for (float i = 0.0; i < iterations; i++) {
-      uv = fract(uv * 1.2) - 0.5;
-
-      float d = length(uv) * exp(-length(uv0));
-
-      vec3 col = palette(length(uv0) + i*.1 + time*.1);
-
-      d = sin(d*4. + time*0.5)/10.;
-      d = abs(d);
-
-      d = pow(0.01 / d, 1.1);
-
-      finalColor += col * d;
-    }
-    
-    // Add subtle mouse interaction
-    float mouseDist = length(uv - mousePosition.xy);
-    finalColor += vec3(0.02, 0.04, 0.06) / (mouseDist + 1.0);
-    
-    // Add subtle pulsating effect
-    float pulse = sin(time * 0.5) * 0.5 + 0.5;
-    finalColor *= 0.95 + pulse * 0.05;
-    
-    // Darken the overall effect
-    finalColor *= isMobile > 0.5 ? 0.3 : 0.4;
-    
-    gl_FragColor = vec4(finalColor, 1.0);
-  }
-`
-
-const vertexShader = `
-  void main() {
-    gl_Position = vec4(position, 1.0);
-  }
-`
-
-function FluidBackground() {
-  const meshRef = useRef<Mesh>(null)
+function ParticleBackground() {
+  const pointsRef = useRef<Points>(null)
   const { size, mouse } = useThree()
-  const [isMobile, setIsMobile] = useState(false)
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+  // Generate random particles
+  const particles = useMemo(() => {
+    const count = 800
+    const positions = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 20
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 20
     }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    return positions
   }, [])
 
-  const shaderArgs = useMemo(
-    () => ({
-      uniforms: {
-        time: { value: 0 },
-        resolution: { value: new Vector2() },
-        mousePosition: { value: new Vector3() },
-        isMobile: { value: isMobile ? 1.0 : 0.0 },
-      },
-      vertexShader,
-      fragmentShader,
-    }),
-    [isMobile]
-  )
-
-  useEffect(() => {
-    if (meshRef.current) {
-      const material = meshRef.current.material as ShaderMaterial
-      material.uniforms.resolution.value.set(size.width, size.height)
-      material.uniforms.isMobile.value = isMobile ? 1.0 : 0.0
-    }
-  }, [size, isMobile])
-
   useFrame((state) => {
-    if (meshRef.current) {
-      const material = meshRef.current.material as ShaderMaterial
-      material.uniforms.time.value = state.clock.elapsedTime * 0.2 // Slow down the animation further
-      material.uniforms.mousePosition.value.set(mouse.x, mouse.y, 0)
+    if (pointsRef.current) {
+      const positions = pointsRef.current.geometry.attributes.position.array as Float32Array
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 1] += 0.02
+        if (positions[i + 1] > 10) {
+          positions[i + 1] = -10
+        }
+      }
+      pointsRef.current.geometry.attributes.position.needsUpdate = true
+      pointsRef.current.rotation.y += 0.002
+      pointsRef.current.rotation.x += 0.001
     }
   })
 
   return (
-    <mesh ref={meshRef}>
-      <planeGeometry args={[2, 2]} />
-      <shaderMaterial args={[shaderArgs]} />
-    </mesh>
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          array={particles}
+          count={particles.length / 3}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.1}
+        color="#00ffff"
+        sizeAttenuation
+        depthWrite={false}
+        transparent
+        opacity={0.8}
+      />
+    </points>
   )
 }
 
 export default function AnimatedBackground() {
   return (
     <div className="fixed inset-0 z-[-1]">
-      <Canvas camera={{ position: [0, 0, 1] }}>
-        <FluidBackground />
+      <Canvas camera={{ position: [0, 0, 30] }} gl={{ antialias: true }}>
+        <color attach="background" args={['#000000']} />
+        <ambientLight intensity={0.3} />
+        <ParticleBackground />
       </Canvas>
     </div>
   )

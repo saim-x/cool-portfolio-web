@@ -84,7 +84,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.1 }}
-        className={`relative z-10 min-h-screen bg-transparent text-gray-200 flex flex-col ${inter.className}`}
+        className={`relative z-10 min-h-screen bg-transparent text-gray-200 flex flex-col ${inter.className} p-4 md:p-8`}
       >
         <motion.div
           ref={cursorRef}
@@ -181,7 +181,7 @@ export default function Home() {
                   transition={{ type: "tween", duration: 0.2 }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
-                  <div className="container mx-auto px-4">
+                  <div className="container mx-auto px-4 my-8">
                     <motion.h2 
                       initial={{ y: 10, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
@@ -411,17 +411,21 @@ export default function Home() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={prevSection}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-zinc-800 text-white p-2 rounded-full"
+                className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-zinc-800 bg-opacity-50 text-white p-2 rounded-full z-20"
               >
-                &#8592;
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={nextSection}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-zinc-800 text-white p-2 rounded-full"
+                className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-zinc-800 bg-opacity-50 text-white p-2 rounded-full z-20"
               >
-                &#8594;
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </motion.button>
             </>
           )}
@@ -431,23 +435,27 @@ export default function Home() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.2 }}
-              className="fixed bottom-4 left-0 right-0 flex justify-center space-x-4"
+              className="fixed bottom-4 left-0 right-0 flex justify-center space-x-4 z-20"
             >
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={prevSection}
-                className="bg-zinc-800 text-white p-2 rounded-full"
+                className="bg-zinc-800 bg-opacity-50 text-white p-2 rounded-full"
               >
-                &#8592;
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={nextSection}
-                className="bg-zinc-800 text-white p-2 rounded-full"
+                className="bg-zinc-800 bg-opacity-50 text-white p-2 rounded-full"
               >
-                &#8594;
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </motion.button>
             </motion.div>
           )}
