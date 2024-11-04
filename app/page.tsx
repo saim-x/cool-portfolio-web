@@ -7,17 +7,10 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 const inter = Inter({ subsets: ['latin'] });
 const firaCode = Fira_Code({ subsets: ['latin'] });
 
-// // Add this at the top of your file or in a separate icons file
-// const WorkIcon = () => (
-//   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-//   </svg>
-// );
-
 export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const sections = ['about', 'skills', 'projects', 'contact'];
+  const sections = ['about', 'skills', 'projects', 'contact', 'contributions']; // Added 'contributions' section
   const containerRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -26,7 +19,6 @@ export default function Home() {
   const cursorX = useSpring(mouseX, { stiffness: 500, damping: 28 });
   const cursorY = useSpring(mouseY, { stiffness: 500, damping: 28 });
 
-  // Add these new motion values for the ring
   const ringX = useSpring(mouseX, { stiffness: 300, damping: 25 });
   const ringY = useSpring(mouseY, { stiffness: 300, damping: 25 });
 
@@ -349,6 +341,31 @@ export default function Home() {
                             </motion.div>
                           </motion.div>
                         ))}
+                      </motion.div>
+                    )}
+                    {section === 'contributions' && ( // New Contributions section
+                      <motion.div 
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+                        className="text-base md:text-lg text-gray-300 space-y-4"
+                      >
+                        <motion.p
+                          initial={{ x: -20, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, delay: 0.4 }}
+                          className="text-left"
+                        >
+                          Check out my GitHub contributions:
+                        </motion.p>
+                        <motion.img 
+                          src="https://ghchart.rshah.org/saim-x" 
+                          alt="saim-x's GitHub chart" 
+                          className="w-full max-w-lg rounded-lg shadow-lg transition-transform duration-300 transform hover:scale-105"
+                          initial={{ scale: 0.9 }}
+                          animate={{ scale: 1 }}
+                          transition={{ duration: 0.5 }}
+                        />
                       </motion.div>
                     )}
                     {section === 'contact' && (
